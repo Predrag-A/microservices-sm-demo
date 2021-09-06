@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -51,14 +53,17 @@ public class AuthenticationController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        final List<String> authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
 
-        final String jwt = tokenProvider.generateToken(loginRequest.username());
+        final String jwt = tokenProvider.generateToken(loginRequest.username(), authorities);
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
     @PutMapping
     public ResponseEntity<?> createUser(final SignUpRequest payload) {
-        log.info("creating user {}", payload.username());
+        log.info("Creating user {}", payload.username());
 
 
         final User user = new User();

@@ -1,19 +1,16 @@
-package com.predrag.a.authservice.service.impl;
+package com.predrag.a.mediaservice.service.impl;
 
 
-import com.predrag.a.authservice.service.JwtService;
+import com.predrag.a.mediaservice.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 
@@ -37,16 +34,18 @@ public class DefaultJwtService implements JwtService {
     }
 
     @Override
-    public String generateToken(final String username, final List<String> authorities) {
-        final Map<String, Object> claims = new HashMap<>();
-        claims.put(AUTHORITIES_CLAIM, authorities);
-        return createToken(claims, username);
+    public List<SimpleGrantedAuthority> extractAuthorities(final String token) {
+        final List<Object> auths = extractClaim(token, claims -> claims.get(AUTHORITIES_CLAIM, List.class));
+        return auths.stream()
+                .filter(String.class::isInstance)
+                .map(String.class::cast)
+                .map(SimpleGrantedAuthority::new)
+                .toList();
     }
 
     @Override
-    public Boolean validateToken(final String token, final String username) {
-        final String extractedUsername = extractUsername(token);
-        return extractedUsername.equals(username) && !isTokenExpired(token);
+    public Boolean validateToken(final String token) {
+        return !isTokenExpired(token);
     }
 
     private <T> T extractClaim(final String token, final Function<Claims, T> claimsResolver) {
@@ -64,15 +63,5 @@ public class DefaultJwtService implements JwtService {
 
     private Boolean isTokenExpired(final String token) {
         return extractExpiration(token).before(new Date());
-    }
-
-    private String createToken(final Map<String, Object> claims, final String subject) {
-        final Date currentDate = new Date(System.currentTimeMillis());
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(currentDate)
-                .setExpiration(DateUtils.addMinutes(currentDate, 30))
-                .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
 }
