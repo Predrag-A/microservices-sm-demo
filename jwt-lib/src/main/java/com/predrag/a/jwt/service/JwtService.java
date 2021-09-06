@@ -1,4 +1,4 @@
-package com.predrag.a.authservice.service;
+package com.predrag.a.jwt.service;
 
 import java.util.Date;
 import java.util.List;
@@ -23,6 +23,14 @@ public interface JwtService {
     Date extractExpiration(final String token);
 
     /**
+     * Retrieves the authorities from the JWT token
+     *
+     * @param token JWT token
+     * @return list of authorities
+     */
+    List<String> extractAuthorities(final String token);
+
+    /**
      * Creates a JWT token for the given username and authorities
      *
      * @param username    username
@@ -36,7 +44,15 @@ public interface JwtService {
      *
      * @param token    JWT token
      * @param username username param which should match the username in the JWT token
-     * @return
+     * @return True if valid
      */
     Boolean validateToken(final String token, final String username);
+
+    /**
+     * Checks if JWT token is expired
+     *
+     * @param token token
+     * @return True if expired
+     */
+    Boolean isTokenExpired(String token);
 }

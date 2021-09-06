@@ -2,9 +2,9 @@ package com.predrag.a.authservice.messaging.impl;
 
 import com.predrag.a.authservice.enums.UserEventType;
 import com.predrag.a.authservice.messaging.UserEventSender;
+import com.predrag.a.authservice.messaging.payload.UserEventPayload;
 import com.predrag.a.authservice.model.Profile;
 import com.predrag.a.authservice.model.User;
-import com.predrag.a.authservice.web.dto.UserEventPayload;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

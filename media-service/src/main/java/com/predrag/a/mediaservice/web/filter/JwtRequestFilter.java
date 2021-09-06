@@ -1,12 +1,10 @@
 package com.predrag.a.mediaservice.web.filter;
 
-import com.predrag.a.mediaservice.service.JwtService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
+import com.predrag.a.jwt.service.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -22,10 +20,9 @@ import java.io.IOException;
 @Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private static final String FORMAT_ERROR = "Authorization header token [{}] has an incorrect signature or format.";
-    private static final String TOKEN_EXPIRED = "Authorization header token [{}] has expired.";
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String AUTH_BEARER = "Bearer ";
+    private static final String EXCEPTION_MSG = "Error while parsing jwt:";
 
     private final JwtService jwtService;
 
@@ -50,16 +47,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             if (username != null
                     && SecurityContextHolder.getContext().getAuthentication() == null
-                    && Boolean.TRUE.equals(jwtService.validateToken(jwt))) {
+                    && Boolean.TRUE.equals(!jwtService.isTokenExpired(jwt))) {
                 final var authToken = new UsernamePasswordAuthenticationToken(username, null,
-                        jwtService.extractAuthorities(jwt));
+                        jwtService.extractAuthorities(jwt).stream()
+                                .map(SimpleGrantedAuthority::new)
+                                .toList());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
-        } catch (final ExpiredJwtException exception) {
-            log.warn(TOKEN_EXPIRED, authHeader, exception);
-        } catch (final SignatureException | MalformedJwtException exception) {
-            log.warn(FORMAT_ERROR, authHeader, exception);
+        } catch (final Exception exception) {
+            log.error(EXCEPTION_MSG, exception);
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);

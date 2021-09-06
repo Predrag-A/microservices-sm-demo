@@ -1,6 +1,6 @@
-package com.predrag.a.authservice.config;
+package com.predrag.a.postservice.config;
 
-import com.predrag.a.authservice.messaging.payload.UserEventPayload;
+import com.predrag.a.postservice.messaging.payload.PostEventPayload;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -16,11 +16,11 @@ import java.util.Map;
 public class KafkaConfig {
 
     @Bean
-    public KafkaTemplate<String, UserEventPayload> kafkaTemplate() {
+    public KafkaTemplate<String, PostEventPayload> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
-    private ProducerFactory<String, UserEventPayload> producerFactory() {
+    private ProducerFactory<String, PostEventPayload> producerFactory() {
         return new DefaultKafkaProducerFactory<>(Map.of(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092",
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,

@@ -1,30 +1,24 @@
-package com.predrag.a.authservice.service.impl;
+package com.predrag.a.jwt.service.impl;
 
 
-import com.predrag.a.authservice.service.JwtService;
+import com.predrag.a.jwt.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DateUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 
-@Service
-@Slf4j
 public class DefaultJwtService implements JwtService {
 
     private static final String AUTHORITIES_CLAIM = "authorities";
 
-    @Value("${config.jwt.secret.apiKey}")
-    private String secret;
+    private final String secret;
+
+    public DefaultJwtService(final String secret) {
+        this.secret = secret;
+    }
 
     @Override
     public String extractUsername(final String token) {
@@ -34,6 +28,11 @@ public class DefaultJwtService implements JwtService {
     @Override
     public Date extractExpiration(final String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    @Override
+    public List<String> extractAuthorities(final String token) {
+        return extractClaim(token, claims -> claims.get(AUTHORITIES_CLAIM, List.class));
     }
 
     @Override
@@ -49,6 +48,11 @@ public class DefaultJwtService implements JwtService {
         return extractedUsername.equals(username) && !isTokenExpired(token);
     }
 
+    @Override
+    public Boolean isTokenExpired(final String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
     private <T> T extractClaim(final String token, final Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -62,17 +66,25 @@ public class DefaultJwtService implements JwtService {
 
     }
 
-    private Boolean isTokenExpired(final String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
     private String createToken(final Map<String, Object> claims, final String subject) {
         final Date currentDate = new Date(System.currentTimeMillis());
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(currentDate)
-                .setExpiration(DateUtils.addMinutes(currentDate, 30))
-                .signWith(SignatureAlgorithm.HS256, secret).compact();
+                .setExpiration(addMinutes(currentDate, 30))
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+    }
+
+    public static Date addMinutes(final Date date, final int amount) {
+        if (date == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        } else {
+            final Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            c.add(Calendar.MINUTE, amount);
+            return c.getTime();
+        }
     }
 }

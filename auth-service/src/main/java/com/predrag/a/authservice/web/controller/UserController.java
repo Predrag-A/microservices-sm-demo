@@ -23,12 +23,16 @@ import java.util.List;
 @Slf4j
 public class UserController {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(final UserService userService) {
+        this.userService = userService;
+    }
 
     @PutMapping("/me/picture")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> updateProfilePicture(
+    public ResponseEntity<Object> updateProfilePicture(
             @RequestBody final String profilePicture,
             @AuthenticationPrincipal final DefaultUserDetails userDetails) {
 
@@ -40,7 +44,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findUser(@PathVariable("username") final String username) {
+    public ResponseEntity<User> findUser(@PathVariable("username") final String username) {
         log.info("retrieving user {}", username);
 
         return userService
@@ -50,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findAll() {
+    public ResponseEntity<List<User>> findAll() {
         log.info("retrieving all users");
 
         return ResponseEntity
@@ -65,7 +69,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/summary/{username}")
-    public ResponseEntity<?> getUserSummary(@PathVariable("username") final String username) {
+    public ResponseEntity<UserSummary> getUserSummary(@PathVariable("username") final String username) {
         log.info("retrieving user {}", username);
 
         return userService
@@ -75,7 +79,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/summary/in")
-    public ResponseEntity<?> getUserSummaries(@RequestBody final List<String> usernames) {
+    public ResponseEntity<List<UserSummary>> getUserSummaries(@RequestBody final List<String> usernames) {
         log.info("retrieving summaries for {} usernames", usernames.size());
 
         final List<UserSummary> summaries =

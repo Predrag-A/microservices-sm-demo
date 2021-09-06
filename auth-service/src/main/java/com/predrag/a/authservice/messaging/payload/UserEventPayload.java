@@ -1,4 +1,4 @@
-package com.predrag.a.authservice.web.dto;
+package com.predrag.a.authservice.messaging.payload;
 
 import com.predrag.a.authservice.enums.UserEventType;
 
