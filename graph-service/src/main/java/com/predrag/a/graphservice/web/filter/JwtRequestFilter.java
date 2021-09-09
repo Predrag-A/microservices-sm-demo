@@ -1,4 +1,4 @@
-package com.predrag.a.postservice.web.filter;
+package com.predrag.a.graphservice.web.filter;
 
 import com.predrag.a.common.jwt.JwtService;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +59,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             log.error(EXCEPTION_MSG, exception);
             SecurityContextHolder.clearContext();
         }
+
         filterChain.doFilter(request, response);
     }
 }

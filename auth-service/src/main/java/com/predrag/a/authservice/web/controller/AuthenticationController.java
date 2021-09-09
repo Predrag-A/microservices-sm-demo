@@ -10,7 +10,7 @@ import com.predrag.a.authservice.web.dto.ApiResponse;
 import com.predrag.a.authservice.web.dto.JwtAuthenticationResponse;
 import com.predrag.a.authservice.web.dto.LoginRequest;
 import com.predrag.a.authservice.web.dto.SignUpRequest;
-import com.predrag.a.jwt.service.JwtService;
+import com.predrag.a.common.jwt.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

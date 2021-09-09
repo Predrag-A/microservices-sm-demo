@@ -1,4 +1,4 @@
-package com.predrag.a.authservice.config;
+package com.predrag.a.graphservice.config;
 
 import com.predrag.a.common.jwt.JwtService;
 import com.predrag.a.common.jwt.impl.DefaultJwtService;

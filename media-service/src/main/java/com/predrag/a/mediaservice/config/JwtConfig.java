@@ -1,7 +1,7 @@
 package com.predrag.a.mediaservice.config;
 
-import com.predrag.a.jwt.service.JwtService;
-import com.predrag.a.jwt.service.impl.DefaultJwtService;
+import com.predrag.a.common.jwt.JwtService;
+import com.predrag.a.common.jwt.impl.DefaultJwtService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

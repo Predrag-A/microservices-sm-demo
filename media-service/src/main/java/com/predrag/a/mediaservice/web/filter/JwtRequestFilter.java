@@ -1,6 +1,6 @@
 package com.predrag.a.mediaservice.web.filter;
 
-import com.predrag.a.jwt.service.JwtService;
+import com.predrag.a.common.jwt.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

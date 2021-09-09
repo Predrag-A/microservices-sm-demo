@@ -1,6 +1,6 @@
 package com.predrag.a.authservice.config;
 
-import com.predrag.a.authservice.messaging.payload.UserEventPayload;
+import com.predrag.a.common.messaging.UserEventPayload;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;

@@ -1,6 +1,6 @@
 package com.predrag.a.postservice.config;
 
-import com.predrag.a.postservice.messaging.payload.PostEventPayload;
+import com.predrag.a.common.messaging.PostEventPayload;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;

@@ -1,8 +1,8 @@
 package com.predrag.a.postservice.messaging.impl;
 
-import com.predrag.a.postservice.enums.PostEventType;
+import com.predrag.a.common.enums.EventType;
+import com.predrag.a.common.messaging.PostEventPayload;
 import com.predrag.a.postservice.messaging.PostEventSender;
-import com.predrag.a.postservice.messaging.payload.PostEventPayload;
 import com.predrag.a.postservice.model.Post;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,23 +25,23 @@ public class DefaultPostEventSender implements PostEventSender {
     @Override
     public void sendPostCreated(final Post post) {
         log.info("Sending message that post is created: [{}]", post);
-        kafkaTemplate.send(POSTS_TOPIC, convertTo(post, PostEventType.CREATED));
+        kafkaTemplate.send(POSTS_TOPIC, convertTo(post, EventType.CREATED));
 
     }
 
     @Override
     public void sendPostUpdated(final Post post) {
         log.info("Sending message that post is updated: [{}]", post);
-        kafkaTemplate.send(POSTS_TOPIC, convertTo(post, PostEventType.UPDATED));
+        kafkaTemplate.send(POSTS_TOPIC, convertTo(post, EventType.UPDATED));
     }
 
     @Override
     public void sendPostDeleted(final Post post) {
         log.info("Sending message that post is deleted: [{}]", post);
-        kafkaTemplate.send(POSTS_TOPIC, convertTo(post, PostEventType.DELETED));
+        kafkaTemplate.send(POSTS_TOPIC, convertTo(post, EventType.DELETED));
     }
 
-    private PostEventPayload convertTo(final Post post, final PostEventType eventType) {
+    private PostEventPayload convertTo(final Post post, final EventType eventType) {
         return new PostEventPayload(post.getId(),
                 post.getCreatedAt(),
                 post.getUpdatedAt(),

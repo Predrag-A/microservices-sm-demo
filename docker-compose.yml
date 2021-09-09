@@ -30,7 +30,21 @@ services:
     volumes:
      - mongodbdata:/data/db
      - mongodbconfig:/data/configdb
+  neo4j:
+    image: neo4j:latest
+    environment:
+      NEO4J_AUTH: 'neo4j/admin'
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4jplugins:/plugins
+      - neo4jdata:/data
+      - neo4jimport:/import
 
 volumes:
   mongodbdata:
   mongodbconfig:
+  neo4jplugins:
+  neo4jdata:
+  neo4jimport:
