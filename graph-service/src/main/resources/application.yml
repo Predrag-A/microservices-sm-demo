@@ -15,6 +15,7 @@ spring:
             trusted:
               packages: "com.predrag.a.*"
           value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: earliest
   cloud:
     stream:
       function:
@@ -22,7 +23,6 @@ spring:
       bindings:
         processUserEvents-in-0:
           destination: users-changed
-
 server:
   port: 8002
 
