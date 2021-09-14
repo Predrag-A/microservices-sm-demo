@@ -9,9 +9,9 @@ public interface UserService {
 
     void updateUser(User user);
 
-    boolean follow(String username, String usernameToFollow);
+    Boolean follow(String username, String usernameToFollow);
 
-    boolean isFollowing(String usernameA, String usernameB);
+    Boolean isFollowing(String usernameA, String usernameB);
 
     Set<User> findFollowers(String username);
 

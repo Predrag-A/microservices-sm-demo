@@ -24,7 +24,7 @@ public class PostsController {
         this.postService = postService;
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<ApiResponse> createPost(@RequestBody final PostRequest postRequest,
                                                   @AuthenticationPrincipal final String username) {
         final Post post = postService.createPost(postRequest, username);

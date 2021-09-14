@@ -44,7 +44,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public boolean follow(final String username, final String usernameToFollow) {
+    public Boolean follow(final String username, final String usernameToFollow) {
         return userRepository.findByUsername(username)
                 .map(user ->
                         userRepository.findByUsername(usernameToFollow).map(
@@ -54,7 +54,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public boolean isFollowing(final String usernameA, final String usernameB) {
+    public Boolean isFollowing(final String usernameA, final String usernameB) {
         return userRepository.isFollowing(usernameA, usernameB);
     }
 
@@ -68,7 +68,7 @@ public class DefaultUserService implements UserService {
         return userRepository.findFollowing(username);
     }
 
-    private boolean followInternal(final User user, final User userToFollow) {
+    private Boolean followInternal(final User user, final User userToFollow) {
         user.getFollows().add(userToFollow);
         userRepository.save(user);
         return true;

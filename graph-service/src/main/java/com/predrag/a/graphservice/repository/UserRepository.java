@@ -18,7 +18,7 @@ public interface UserRepository extends Neo4jRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
     @Query(IS_FOLLOWING)
-    boolean isFollowing(String usernameA, String usernameB);
+    Boolean isFollowing(String usernameA, String usernameB);
 
     @Query(FIND_FOLLOWING)
     Set<User> findFollowing(String username);
