@@ -45,7 +45,7 @@ public class UserController {
 
     @GetMapping(value = "/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> findUser(@PathVariable("username") final String username) {
-        log.info("retrieving user {}", username);
+        log.info("Retrieving user {}", username);
 
         return userService
                 .findByUsername(username)
@@ -55,7 +55,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<User>> findAll() {
-        log.info("retrieving all users");
+        log.info("Retrieving all users");
 
         return ResponseEntity
                 .ok(userService.findAll());
@@ -70,7 +70,7 @@ public class UserController {
 
     @GetMapping(value = "/summary/{username}")
     public ResponseEntity<UserSummary> getUserSummary(@PathVariable("username") final String username) {
-        log.info("retrieving user {}", username);
+        log.info("Retrieving user {}", username);
 
         return userService
                 .findByUsername(username)
@@ -80,7 +80,7 @@ public class UserController {
 
     @PostMapping(value = "/summary/in")
     public ResponseEntity<List<UserSummary>> getUserSummaries(@RequestBody final List<String> usernames) {
-        log.info("retrieving summaries for {} usernames", usernames.size());
+        log.info("Retrieving summaries for {} usernames", usernames.size());
 
         final List<UserSummary> summaries =
                 userService

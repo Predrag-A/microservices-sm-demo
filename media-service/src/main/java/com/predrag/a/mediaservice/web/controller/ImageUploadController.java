@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/upload")
+@RequestMapping("/media")
 public class ImageUploadController {
 
     private final ImageService imageService;
@@ -24,7 +24,7 @@ public class ImageUploadController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @PostMapping
+    @PostMapping("/upload")
     public FileUploadResponse uploadFile(@RequestParam final MultipartFile image,
                                          @AuthenticationPrincipal final String username) {
         final ImageMetadata metadata = imageService.upload(image, username);

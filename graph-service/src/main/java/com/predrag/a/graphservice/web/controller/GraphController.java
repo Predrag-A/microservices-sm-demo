@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/graph")
 @Slf4j
-public class UserController {
+public class GraphController {
 
     private final UserService userService;
 
     @Autowired
-    public UserController(final UserService userService) {
+    public GraphController(final UserService userService) {
         this.userService = userService;
     }
 
@@ -33,7 +33,7 @@ public class UserController {
                 username,
                 userToFollow);
 
-        if (!userService.follow(username, userToFollow)) {
+        if (Boolean.FALSE.equals(userService.follow(username, userToFollow))) {
             return ResponseEntity.badRequest()
                     .body(new ApiResponse(false, "One of the usernames provided is not valid"));
         }
