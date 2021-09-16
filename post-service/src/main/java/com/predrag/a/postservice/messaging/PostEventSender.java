@@ -9,5 +9,4 @@ public interface PostEventSender {
     void sendPostUpdated(Post post);
 
     void sendPostDeleted(Post post);
-
 }

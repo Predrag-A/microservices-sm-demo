@@ -1,4 +1,4 @@
-package com.predrag.a.graphservice.messaging;
+package com.predrag.a.graphservice.messaging.consumer;
 
 import com.predrag.a.common.messaging.UserEventPayload;
 import com.predrag.a.graphservice.model.User;

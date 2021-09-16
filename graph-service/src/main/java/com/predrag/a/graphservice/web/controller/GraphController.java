@@ -4,6 +4,7 @@ import com.predrag.a.graphservice.model.User;
 import com.predrag.a.graphservice.service.UserService;
 import com.predrag.a.graphservice.web.dto.ApiResponse;
 import com.predrag.a.graphservice.web.dto.FollowRequest;
+import com.predrag.a.graphservice.web.dto.UnfollowRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class GraphController {
         final String username = request.username();
         final String userToFollow = request.userToFollow();
 
-        log.info("Received a follow request from [{}] to follow [{}]",
+        log.info("Received a request from [{}] to follow [{}]",
                 username,
                 userToFollow);
 
@@ -39,6 +40,25 @@ public class GraphController {
         }
         final ApiResponse response = new ApiResponse(true,
                 String.format("User %s is following user %s", username, userToFollow));
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/unfollow")
+    public ResponseEntity<ApiResponse> unfollow(@RequestBody final UnfollowRequest request) {
+
+        final String username = request.username();
+        final String userToUnfollow = request.userToUnfollow();
+
+        log.info("Received from [{}] to unfollow [{}]",
+                username,
+                userToUnfollow);
+
+        if (Boolean.FALSE.equals(userService.unfollow(username, userToUnfollow))) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "One of the usernames provided is not valid"));
+        }
+        final ApiResponse response = new ApiResponse(true,
+                String.format("User %s has unfollowed user %s", username, userToUnfollow));
         return ResponseEntity.ok(response);
     }
 

@@ -1,5 +1,6 @@
 package com.predrag.a.graphservice.service.impl;
 
+import com.predrag.a.graphservice.messaging.producer.FollowEventSender;
 import com.predrag.a.graphservice.model.User;
 import com.predrag.a.graphservice.repository.UserRepository;
 import com.predrag.a.graphservice.service.UserService;
@@ -14,10 +15,13 @@ import java.util.Set;
 public class DefaultUserService implements UserService {
 
     private final UserRepository userRepository;
+    private final FollowEventSender followEventSender;
 
     @Autowired
-    public DefaultUserService(final UserRepository userRepository) {
+    public DefaultUserService(final UserRepository userRepository,
+                              final FollowEventSender followEventSender) {
         this.userRepository = userRepository;
+        this.followEventSender = followEventSender;
     }
 
     @Override
@@ -54,6 +58,16 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    public Boolean unfollow(final String username, final String usernameToUnfollow) {
+        return userRepository.findByUsername(username)
+                .map(user ->
+                        userRepository.findByUsername(usernameToUnfollow).map(
+                                userToUnfollow -> unfollowInternal(user, userToUnfollow)
+                        ).orElse(false))
+                .orElse(false);
+    }
+
+    @Override
     public Boolean isFollowing(final String usernameA, final String usernameB) {
         return userRepository.isFollowing(usernameA, usernameB);
     }
@@ -69,8 +83,28 @@ public class DefaultUserService implements UserService {
     }
 
     private Boolean followInternal(final User user, final User userToFollow) {
-        user.getFollows().add(userToFollow);
-        userRepository.save(user);
+        final Set<User> followers = user.getFollows();
+        if (!followers.contains(userToFollow)) {
+            user.getFollows().add(userToFollow);
+            userRepository.save(user);
+        } else {
+            log.warn("User [{}] is already following [{}]", user.getUsername(), userToFollow.getUsername());
+        }
+        return true;
+    }
+
+
+    private Boolean unfollowInternal(final User user, final User userToUnfollow) {
+        final String username = user.getUsername();
+        final String usernameToUnfollow = userToUnfollow.getUsername();
+        final Set<User> followers = user.getFollows();
+        if (followers.contains(userToUnfollow)) {
+            user.getFollows().remove(userToUnfollow);
+            userRepository.save(user);
+            followEventSender.sendUnfollowEvent(username, usernameToUnfollow);
+        } else {
+            log.warn("User [{}] is already not following [{}]", username, usernameToUnfollow);
+        }
         return true;
     }
 }

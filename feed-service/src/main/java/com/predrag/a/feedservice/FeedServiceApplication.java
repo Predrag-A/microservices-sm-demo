@@ -13,5 +13,4 @@ public class FeedServiceApplication {
     public static void main(final String[] args) {
         SpringApplication.run(FeedServiceApplication.class, args);
     }
-
 }

@@ -1,6 +1,5 @@
 package com.predrag.a.feedservice.messaging;
 
-import com.predrag.a.common.enums.EventType;
 import com.predrag.a.common.messaging.PostEventPayload;
 import com.predrag.a.feedservice.client.dto.PostResponse;
 import com.predrag.a.feedservice.service.FeedGeneratorService;
@@ -31,8 +30,10 @@ public class PostEventConsumer {
     private void processPayload(final String key, final PostEventPayload payload) {
         log.info("Processing payload: [{}]", payload);
 
-        if (EventType.CREATED.equals(payload.eventType())) {
-            feedGeneratorService.addToFeed(convertTo(payload));
+        switch (payload.eventType()) {
+            case CREATED -> feedGeneratorService.addToFeed(convertTo(payload));
+            case UPDATED -> log.error("Update event type not supported");
+            case DELETED -> feedGeneratorService.deleteFromFeeds(convertTo(payload));
         }
     }
 

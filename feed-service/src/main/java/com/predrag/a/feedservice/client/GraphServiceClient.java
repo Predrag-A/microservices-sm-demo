@@ -12,7 +12,7 @@ import java.util.Set;
 @FeignClient("${dependencies.graph.service.url}")
 public interface GraphServiceClient {
 
-    @GetMapping("/users/{username}/followers")
+    @GetMapping("/graph/{username}/followers")
     ResponseEntity<Set<UserResponse>> findFollowers(
             @RequestHeader("Authorization") String token,
             @PathVariable String username);

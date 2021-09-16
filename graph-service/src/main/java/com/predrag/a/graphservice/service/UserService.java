@@ -11,6 +11,8 @@ public interface UserService {
 
     Boolean follow(String username, String usernameToFollow);
 
+    Boolean unfollow(String username, String usernameToUnfollow);
+
     Boolean isFollowing(String usernameA, String usernameB);
 
     Set<User> findFollowers(String username);
